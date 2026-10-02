@@ -1,24 +1,22 @@
 <p align="center">
-  <img src="./assets/header.png" alt="Generative engine optimization skill for Claude Code" width="100%">
+  <img src="./assets/lockup.png" width="880" alt="Generative engine optimization skill for Claude Code. Generative engine optimization is how a page gets quoted by an answer engine.">
 </p>
 
 # Generative engine optimization skill for Claude Code
 
-**Generative engine optimization is how a page gets quoted by an answer engine.** The same check covers answer engine optimization.
+Generative engine optimization is how a page gets quoted by an answer engine.
 
-You hold a channel decision, a buyer question, a citation record, an indexability pass, one brief, and one kill date.
+Answer engine optimization is the same check.
 
-The scorer refuses a health-score dump, an llms.txt project, or a 40-article calendar.
+On 2026-10-01 a pasted answer named a rival and a roundup. This brand was not named.
 
-[![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-blue)](https://claude.ai/claude-code)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-![No paid APIs](https://img.shields.io/badge/paid%20APIs-none-success)
+The good draft passes. A 40-article calendar fails the score.
 
 <p align="center">
   <img src="./assets/demo.gif" alt="Generative engine optimization skill — one brief passes, a content calendar fails" width="100%">
 </p>
 
-The build guide teaches a human. This pack teaches an agent.
+The build guide teaches a human. The pack teaches an agent.
 
 ## Install
 
@@ -26,7 +24,13 @@ The build guide teaches a human. This pack teaches an agent.
 npx skills add cmj-hub/claude-geo --all -g --full-depth
 ```
 
-Installs into Claude Code, Cursor, Codex, Grok, Copilot, Windsurf, Cline, and OpenCode. The scorer is Python in this repo. It does not call a paid API.
+`--all` writes this pack for every host the installer knows. One host:
+
+```bash
+npx skills add cmj-hub/claude-geo --skill '*' -g --full-depth -y -a claude-code
+```
+
+Swap `claude-code` for `cursor`, `codex`, `grok`, `github-copilot`, `windsurf`, `cline`, or `opencode`. The scorer is Python in this repo. It does not call a paid API.
 
 ## What you walk out with in 15 minutes
 
@@ -56,23 +60,21 @@ No. A 40-article calendar fails the score.
 - [Generative engine optimization pack](https://jaymountconsulting.com/skills/claude-geo) — this pack's page
 - [Skill packs catalog](https://jaymountconsulting.com/skills) — install paths + every pack
 
+## Free, no signup
+
+[AI search visibility checker](https://jaymountconsulting.com/tools/geo-visibility-audit)
+
 ## Free, by email
 
 [**Growth Audit**](https://jaymountconsulting.com/growth-audit) — architecture gaps in the GTM you already run. Free written report.
 
 [**Friday Signal**](https://jaymountconsulting.com/newsletter/signal) — one Friday GTM read. No pitch in it.
 
-## Companion packs
+## Next
 
-- [claude-psp](https://github.com/cmj-hub/claude-psp) — Ideal customer profile
-- [claude-evp](https://github.com/cmj-hub/claude-evp) — Value proposition
-- [claude-cold-email](https://github.com/cmj-hub/claude-cold-email) — Cold email
-- [claude-founder-brand](https://github.com/cmj-hub/claude-founder-brand) — LinkedIn posts
-- [claude-pricing](https://github.com/cmj-hub/claude-pricing) — Pricing strategy
-- [claude-landing-page](https://github.com/cmj-hub/claude-landing-page) — Landing page
-- [claude-sales-offer](https://github.com/cmj-hub/claude-sales-offer) — Sales offer
-- [claude-prospect-list](https://github.com/cmj-hub/claude-prospect-list) — Sales prospecting
-- [claude-email-sequence](https://github.com/cmj-hub/claude-email-sequence) — Email sequence
+Previous: [Landing page](https://github.com/cmj-hub/claude-landing-page)
+
+Next: [LinkedIn posts](https://github.com/cmj-hub/claude-founder-brand)
 
 ## License
 
