@@ -1,4 +1,6 @@
-# Findability
+# Generative engine optimization
+
+Generative engine optimization is how a page gets quoted by an answer engine. The same check covers answer engine optimization.
 
 You hold a channel decision, a buyer question, a citation record, an indexability pass, one brief, and one kill date.
 
