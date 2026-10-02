@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./assets/header.png" alt="Generative engine optimization skill for Claude Code" width="100%">
+</p>
+
 # Generative engine optimization skill for Claude Code
 
 **Generative engine optimization is how a page gets quoted by an answer engine.** The same check covers answer engine optimization.
@@ -9,6 +13,10 @@ The scorer refuses a health-score dump, an llms.txt project, or a 40-article cal
 [![Claude Code Skill](https://img.shields.io/badge/Claude%20Code-Skill-blue)](https://claude.ai/claude-code)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![No paid APIs](https://img.shields.io/badge/paid%20APIs-none-success)
+
+<p align="center">
+  <img src="./assets/demo.gif" alt="Generative engine optimization skill — one brief passes, a content calendar fails" width="100%">
+</p>
 
 The build guide teaches a human. This pack teaches an agent.
 
