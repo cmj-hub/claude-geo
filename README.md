@@ -20,17 +20,13 @@ The build guide teaches a human. The pack teaches an agent.
 
 ## Install
 
-```bash
-npx skills add cmj-hub/claude-geo --all -g --full-depth
+Clone this repository and load the files from disk. The skills live under `skills/` and `SKILL.md`.
+
+```
+git clone https://github.com/cmj-hub/claude-geo.git
 ```
 
-`--all` writes this pack for every host the installer knows. One host:
-
-```bash
-npx skills add cmj-hub/claude-geo --skill '*' -g --full-depth -y -a claude-code
-```
-
-Swap `claude-code` for `cursor`, `codex`, `grok`, `github-copilot`, `windsurf`, `cline`, or `opencode`. The scorer is Python in this repo. It does not call a paid API.
+The scorer is Python in this repo. It does not call a paid API.
 
 ## What you walk out with in 15 minutes
 
