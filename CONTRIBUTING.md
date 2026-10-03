@@ -12,8 +12,8 @@ before you contribute.
   an issue first if it's a substantial addition.
 - **Calibration improvements** to the scoring scripts — if you can
   show a case where the script scores wrong, that's gold.
-- **Cross-runtime ports** (Cursor, Gemini CLI, Codex) — install is
-  via the skills CLI; see the README Install section.
+- **Cross-runtime ports** (Cursor, Gemini CLI, Codex) — ship as
+  separate plugins; clone this repo to work on the files locally.
 - **Translation** of the framework reference docs.
 
 ## What doesn't land
@@ -34,8 +34,6 @@ before you contribute.
 ```bash
 git clone https://github.com/cmj-hub/claude-geo.git
 cd claude-geo
-# Install into local agents
-npx skills add cmj-hub/claude-geo --all -g --full-depth
 ```
 
 For Python scripts:
