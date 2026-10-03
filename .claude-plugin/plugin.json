@@ -1,6 +1,6 @@
 {
   "name": "geo",
-  "icon": "icon.png",
+  "icon": ".claude-plugin/icon.png",
   "version": "0.3.0",
   "description": "Score generative engine optimization findability for one buyer question. Use when a page must be quotable by an answer engine, and when a content calendar or health-score dump must be refused.",
   "author": { "name": "Jay Mount Consulting" },
