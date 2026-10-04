@@ -1,0 +1,17 @@
+{
+  "name": "jmc-geo",
+  "owner": {
+    "name": "Jay Mount Consulting"
+  },
+  "metadata": {
+    "description": "Jay Mount Consulting skill packs: generative engine optimization findability for one buyer question."
+  },
+  "plugins": [
+    {
+      "name": "geo",
+      "source": "./",
+      "description": "Score generative engine optimization (GEO) and answer engine optimization (AEO) findability for one buyer question.",
+      "version": "0.4.0"
+    }
+  ]
+}

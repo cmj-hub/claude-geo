@@ -5,15 +5,22 @@ Prints a channel decision, a buyer question, a citation record, an indexability
 pass, one brief, and one kill date. Refuses a health-score dump, an llms.txt
 project, or a 40-article calendar.
 
+Each of the six axes is checked, not just filled in. A failing draft prints one
+line per problem, named by axis, and exits 1.
+
 Stdlib only. No network.
 
   python3 scripts/score.py --file draft.json
   python3 scripts/score.py --stdin
+  python3 scripts/score.py --file draft.json --json
+
+Exit codes: 0 passes, 1 refused or failing, 2 bad input.
 """
 
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import re
 import sys
@@ -30,10 +37,40 @@ FIELDS = (
     ("brief", "brief"),
     ("kill_date", "kill date"),
 )
+LABELS = dict(FIELDS)
+
+# Refusals are read from the plan fields only. The citation record and the
+# indexability pass are observations, and may name llms.txt or a score they saw.
+PLAN_FIELDS = ("channel_decision", "buyer_question", "brief")
 
 HEALTH_RE = re.compile(r"health[-\s]?score", re.IGNORECASE)
-LLMS_RE = re.compile(r"llms\.txt", re.IGNORECASE)
-CALENDAR_RE = re.compile(r"40[-\s]?article", re.IGNORECASE)
+LLMS_RE = re.compile(r"llms(?:-full)?\.txt", re.IGNORECASE)
+CALENDAR_RE = re.compile(
+    r"\b\d{2,}[-\s]?(?:article|post|page|blog|piece)s?\b"
+    r"|content[-\s]calendar|editorial[-\s]calendar",
+    re.IGNORECASE,
+)
+
+PLACEHOLDER_RE = re.compile(
+    r"^(?:tbd|tbc|todo|n/?a|none|none observed|unknown|unchecked|pending|-+|\?+|\.+)\.?$",
+    re.IGNORECASE,
+)
+DATE_RE = re.compile(r"\b(\d{4}-\d{2}-\d{2})\b")
+METHOD_RE = re.compile(r"\bmethod\s*:\s*\S", re.IGNORECASE)
+STATUS_RE = re.compile(r"\b(?:return(?:s|ed|ing)?|status(?: code)?|http)\W*([1-5]\d\d)\b", re.IGNORECASE)
+BLOCKED_RE = re.compile(
+    r"(?<!not )(?<!n't )(?<!no )\b(?:blocked|disallowed|noindex(?:ed)?|login[-\s]walled|paywalled)\b",
+    re.IGNORECASE,
+)
+LIST_SEPARATORS_RE = re.compile(r"[|;]|,.*,.*,")
+
+QUESTION_MIN_WORDS = 5
+QUESTION_MAX_WORDS = 30
+DECISION_MIN_WORDS = 8
+BRIEF_MIN_WORDS = 8
+BRIEF_MAX_WORDS = 150
+KILL_MIN_DAYS = 14
+KILL_MAX_DAYS = 180
 
 
 def fail_input(message: str) -> None:
@@ -89,7 +126,19 @@ def nonempty_text(value: object) -> str:
     return ""
 
 
-def refusal_for(blob: str) -> str:
+def word_count(text: str) -> int:
+    return len(text.split())
+
+
+def parse_date(text: str) -> dt.date | None:
+    try:
+        return dt.date.fromisoformat(text)
+    except ValueError:
+        return None
+
+
+def refusal_for(values: dict) -> str:
+    blob = "\n".join(values[key] for key in PLAN_FIELDS)
     if HEALTH_RE.search(blob):
         return "a health-score dump"
     if LLMS_RE.search(blob):
@@ -99,27 +148,134 @@ def refusal_for(blob: str) -> str:
     return ""
 
 
+def check_channel_decision(text: str) -> list:
+    if word_count(text) < DECISION_MIN_WORDS:
+        return ["say why search is or is not a channel for this offer, and what comes first"]
+    return []
+
+
+def check_buyer_question(text: str) -> list:
+    problems = []
+    if not text.endswith("?"):
+        problems.append("write it as a question a buyer would type, ending in ?")
+    if text.count("?") > 1:
+        problems.append("one question, not several")
+    if LIST_SEPARATORS_RE.search(text):
+        problems.append("this reads like a keyword list")
+    words = word_count(text)
+    if words < QUESTION_MIN_WORDS:
+        problems.append("too short to be the buyer's own words")
+    if words > QUESTION_MAX_WORDS:
+        problems.append("too long for one question")
+    if re.match(r"^what should we (?:publish|write|post)\b", text, re.IGNORECASE):
+        problems.append("that is our question, not the buyer's")
+    return problems
+
+
+def check_citation_record(text: str) -> list:
+    problems = []
+    if not DATE_RE.search(text) or parse_date(DATE_RE.search(text).group(1)) is None:
+        problems.append("add the date the answer was observed (YYYY-MM-DD)")
+    if not METHOD_RE.search(text):
+        problems.append("add the method, as 'Method: ...'")
+    return problems
+
+
+def check_indexability_pass(text: str) -> list:
+    problems = []
+    statuses = STATUS_RE.findall(text)
+    if not statuses:
+        problems.append("record the HTTP status of the URL")
+    elif any(not code.startswith("2") for code in statuses):
+        problems.append("the URL must return 200 before anyone asks whether it can be cited")
+    if not re.search(r"robots", text, re.IGNORECASE):
+        problems.append("record whether robots allows the page")
+    if not re.search(r"sitemap", text, re.IGNORECASE):
+        problems.append("record whether the URL is in the sitemap")
+    if BLOCKED_RE.search(text):
+        problems.append("the page is blocked; fix fetchability first")
+    return problems
+
+
+def check_brief(text: str) -> list:
+    words = word_count(text)
+    if words < BRIEF_MIN_WORDS:
+        return ["name the page and what its first paragraph says"]
+    if words > BRIEF_MAX_WORDS:
+        return ["a brief is one page; this is more than one brief"]
+    return []
+
+
+def check_kill_date(text: str, citation_record: str) -> list:
+    kill = parse_date(text)
+    if kill is None:
+        return ["write the kill date as YYYY-MM-DD"]
+    match = DATE_RE.search(citation_record)
+    observed = parse_date(match.group(1)) if match else None
+    if observed is None:
+        return []
+    days = (kill - observed).days
+    if days < KILL_MIN_DAYS:
+        return [f"give the page at least {KILL_MIN_DAYS} days after the citation record"]
+    if days > KILL_MAX_DAYS:
+        return [f"set it within {KILL_MAX_DAYS} days of the citation record"]
+    return []
+
+
+def score(values: dict) -> list:
+    """Return (key, problem) pairs. Empty means the draft passes."""
+    problems = []
+    for key, _label in FIELDS:
+        if not values[key]:
+            problems.append((key, "missing"))
+        elif PLACEHOLDER_RE.match(values[key]):
+            problems.append((key, "a placeholder is not a record"))
+    if problems:
+        return problems
+    checks = (
+        ("channel_decision", check_channel_decision(values["channel_decision"])),
+        ("buyer_question", check_buyer_question(values["buyer_question"])),
+        ("citation_record", check_citation_record(values["citation_record"])),
+        ("indexability_pass", check_indexability_pass(values["indexability_pass"])),
+        ("brief", check_brief(values["brief"])),
+        ("kill_date", check_kill_date(values["kill_date"], values["citation_record"])),
+    )
+    for key, found in checks:
+        problems.extend((key, problem) for problem in found)
+    return problems
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Score a findability draft")
     parser.add_argument("--file", help="Path to a JSON object")
     parser.add_argument("--stdin", action="store_true", help="Read a JSON object from stdin")
+    parser.add_argument("--json", action="store_true", help="Print the result as JSON")
     args = parser.parse_args()
     data = load_payload(args)
     if not isinstance(data, dict):
         fail_input("JSON must be an object")
 
     values = {key: nonempty_text(data.get(key)) for key, _label in FIELDS}
-    blob = "\n".join(values.values())
-    named = refusal_for(blob)
-    if named:
+    named = refusal_for(values)
+    problems = [] if named else score(values)
+    passed = not named and not problems
+
+    if args.json:
+        result = {"pass": passed, "refused": named or None}
+        result["problems"] = [{"field": key, "problem": text} for key, text in problems]
+        if passed:
+            result["artifact"] = values
+        print(json.dumps(result, indent=2))
+    elif named:
         print(named)
-        return 1
-    if any(not values[key] for key, _label in FIELDS):
+    elif problems:
         print("draft is incomplete")
-        return 1
-    for key, label in FIELDS:
-        print(f"{label}: {values[key]}")
-    return 0
+        for key, text in problems:
+            print(f"{LABELS[key]}: {text}")
+    else:
+        for key, label in FIELDS:
+            print(f"{label}: {values[key]}")
+    return 0 if passed else 1
 
 
 if __name__ == "__main__":

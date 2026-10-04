@@ -42,6 +42,14 @@ For Python scripts:
 # All scripts are zero-dep Python 3.8+ — just run them
 python3 scripts/score.py --help
 python3 scripts/score.py --file examples/findability-good.json
+python3 -m unittest discover -s tests
+```
+
+To try the plugin locally in Claude Code:
+
+```bash
+claude plugin validate .
+claude --plugin-dir .
 ```
 
 ## Pull-request checklist
@@ -50,8 +58,9 @@ python3 scripts/score.py --file examples/findability-good.json
       directory matches `name:` in frontmatter)
 - [ ] Sub-skill descriptions include trigger phrases inline
 - [ ] If you touch a script, smoke-test it and paste output in the PR
-- [ ] If you add a new sub-skill, list it in the README companion table
-- [ ] CHANGELOG.md updated (when present)
+- [ ] If you add a new sub-skill, list it in the README skills table and the root `SKILL.md`
+- [ ] CHANGELOG.md updated
+- [ ] `python3 -m unittest discover -s tests` passes
 - [ ] No new dependencies (any of: pip packages, npm packages, API
       keys, paid services)
 
