@@ -36,6 +36,7 @@ class ScoreFindability(unittest.TestCase):
         self.assertIn("indexability pass:", result.stdout)
         self.assertIn("brief:", result.stdout)
         self.assertIn("kill date:", result.stdout)
+        self.assertEqual(result.stdout.strip().splitlines()[-1], "Next: /landing-page:page")
 
     def test_calendar_exits_1(self):
         result = run(["--file", str(ROOT / "examples" / "findability-calendar.json")])
@@ -49,7 +50,19 @@ class ScoreFindability(unittest.TestCase):
         self.assertIn("draft is incomplete", result.stdout)
         for label in ("channel decision", "buyer question", "citation record",
                       "indexability pass", "kill date"):
-            self.assertIn(label + ":", result.stdout)
+            self.assertIn("- " + label + ":", result.stdout)
+        for line in result.stdout.splitlines()[1:-1]:
+            self.assertIn(" \u2192 ", line)
+        self.assertEqual(result.stdout.strip().splitlines()[-1], "Next: fix the lines above and run this again.")
+
+    def test_help_shows_example(self):
+        result = run(["--help"])
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("examples/findability-good.json", result.stdout)
+
+    def test_input_alias(self):
+        result = run(["--input", str(ROOT / "examples" / "findability-good.json")])
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_template_is_incomplete(self):
         result = run(["--file", str(ROOT / "examples" / "findability-template.json")])
@@ -72,9 +85,12 @@ class ScoreFindability(unittest.TestCase):
         payload = json.loads(result.stdout)
         self.assertTrue(payload["pass"])
         self.assertEqual(payload["artifact"]["kill_date"], "2026-12-15")
+        self.assertEqual(payload["next"], "/landing-page:page")
         failing = json.loads(run(["--stdin", "--json"], stdin=json.dumps({**GOOD, "kill_date": "soon"})).stdout)
         self.assertFalse(failing["pass"])
         self.assertEqual(failing["problems"][0]["field"], "kill_date")
+        self.assertTrue(failing["problems"][0]["fix"])
+        self.assertIn("run this again", failing["next"])
 
 
 class Refusals(unittest.TestCase):
@@ -88,7 +104,10 @@ class Refusals(unittest.TestCase):
             with self.subTest(named):
                 result = score(**change)
                 self.assertEqual(result.returncode, 1)
-                self.assertEqual(result.stdout.strip(), named)
+                lines = result.stdout.strip().splitlines()
+                self.assertEqual(lines[0], f"refused: {named}")
+                self.assertTrue(lines[1].startswith(f"- {named} \u2192 "), lines[1])
+                self.assertEqual(lines[-1], "Next: fix the lines above and run this again.")
 
     def test_observations_may_name_llms_txt(self):
         result = score(indexability_pass="The URL returns 200, robots allows it, it is in the sitemap. An llms.txt file exists and changes nothing here.")

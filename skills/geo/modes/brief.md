@@ -1,10 +1,6 @@
----
-name: brief
-description: "Write one page brief that an answer engine can quote, plus one kill date. Use when the buyer question, citation record, and indexability pass are done and the next step is the page itself, or when someone asks how to structure content so ChatGPT, Perplexity, or AI Overviews will cite it."
-models: ""
----
-
 # Brief
+
+Mode `brief`: one page brief an answer engine can quote, plus one kill date. Writes `brief` and `kill_date`.
 
 One page. One brief. One kill date. The brief says what the page must say and in what order. It is not the page.
 
@@ -38,7 +34,7 @@ Answer engines lift passages, not pages. Every rule here makes one passage easy 
 The kill date is when the citation record is run again with the same method.
 
 - Set it 6 to 12 weeks after the page ships. Engines take weeks to recrawl and re-ground. The scorer accepts 14 to 180 days after the citation record.
-- On the kill date, re-run `citation-record` with the same question, engines, and method.
+- On the kill date, re-run `/geo:geo citation-record` with the same question, engines, and method.
 - If this brand is now named or cited: keep the page and pick the next buyer question.
 - If not: rewrite the first paragraph and the one claim once, or kill the page and pick a different question. Do not add more pages on the same question.
 
@@ -57,10 +53,10 @@ The `brief` and `kill_date` fields. Example:
 
 ## Score
 
-Write the field into `draft.json` (start from `examples/findability-template.json`), then run:
+Write the field into `gtm/findability.json` (create `gtm/` if missing; start from `${CLAUDE_PLUGIN_ROOT}/examples/findability-template.json`), then run:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-.}/scripts/score.py" --file draft.json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py --file gtm/findability.json
 ```
 
-Exit 0 prints the six lines. Exit 1 names each failing field; fix that field first. Fields other skills own may read `missing` until those skills run.
+Exit 0 prints the six lines. Exit 1 prints `- field: what is wrong → what to change` per problem; fix that field first. Fields other skills own may read `missing` until those skills run.

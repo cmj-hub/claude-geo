@@ -11,7 +11,7 @@
       "name": "geo",
       "source": "./",
       "description": "Score generative engine optimization (GEO) and answer engine optimization (AEO) findability for one buyer question. Use when a page must be quotable by ChatGPT, Perplexity, Claude, Gemini, Copilot, or Google AI Overviews. Refuses a content calendar or a health-score dump.",
-      "version": "0.5.1"
+      "version": "0.6.0"
     }
   ]
 }

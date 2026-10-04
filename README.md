@@ -6,6 +6,23 @@
 
 Generative engine optimization is how a page gets quoted by an answer engine.
 
+## In 60 seconds
+
+```text
+/plugin marketplace add cmj-hub/gtm-operator-skills
+/plugin install geo@gtm-operator-skills
+/geo:geo
+```
+
+Or score the sample without an agent:
+
+```bash
+python3 scripts/score.py --file examples/findability-good.json       # exit 0, prints six lines, then "Next: /landing-page:page"
+python3 scripts/score.py --file examples/findability-calendar.json   # exit 1: - a 40-article calendar → write one brief; the next one waits for this one's kill date
+```
+
+Part of the GTM operator suite — `/plugin install gtm@gtm-operator-skills` installs all ten.
+
 Answer engine optimization is the same check.
 
 On 2026-10-01 a pasted answer named a rival and a roundup. This brand was not named.
@@ -27,13 +44,11 @@ In Claude Code, add this repository as a plugin marketplace and install the pack
 /plugin install geo@jmc-geo
 ```
 
-Or clone it and load the files from disk. The skills live under `skills/` and `SKILL.md`.
+Or clone it and load the files from disk. The one skill lives in `skills/geo/`; its modes are in `skills/geo/modes/`.
 
 ```
 git clone https://github.com/cmj-hub/claude-geo.git
 ```
-
-From the suite marketplace: `/plugin marketplace add cmj-hub/gtm-operator-skills`, then `/plugin install geo@gtm-operator-skills`.
 
 Other agents (Codex, Cursor, and the rest) can install it with the skills CLI:
 
@@ -43,17 +58,20 @@ npx skills add cmj-hub/claude-geo --all -g --full-depth
 
 The scorer is Python in this repo. It does not call a paid API.
 
-## The skills
+## The modes
 
-Run them in order. Each one writes one field of one JSON draft.
+One command, `/geo:geo`, with a mode as the argument. Run the modes in order. Each one writes one field of `gtm/findability.json`. With no argument, `/geo:geo` reports status and starts the first missing field.
 
-| Skill | Writes | Job |
+| Command | Writes | Job |
 |---|---|---|
-| `channel-decision` | `channel_decision` | Whether search is a channel for this offer, and what comes first |
-| `buyer-question` | `buyer_question` | One question, in the buyer's words, close to a decision |
-| `citation-record` | `citation_record` | Who an answer engine named, on one date, by one method |
-| `indexability` | `indexability_pass` | Status, robots for search and AI crawlers, sitemap, raw HTML |
-| `brief` | `brief`, `kill_date` | One quotable page, and the date the record is run again |
+| `/geo:geo channel-decision` | `channel_decision` | Whether search is a channel for this offer, and what comes first |
+| `/geo:geo buyer-question` | `buyer_question` | One question, in the buyer's words, close to a decision |
+| `/geo:geo citation-record` | `citation_record` | Who an answer engine named, on one date, by one method |
+| `/geo:geo indexability` | `indexability_pass` | Status, robots for search and AI crawlers, sitemap, raw HTML |
+| `/geo:geo brief` | `brief`, `kill_date` | One quotable page, and the date the record is run again |
+| `/geo:geo status` | nothing | What passes, what fails, and the next step |
+
+Moved in 0.6: `/geo:brief` is now `/geo:geo brief`, and the same for every former step command.
 
 ## What you walk out with in 15 minutes
 
@@ -65,7 +83,7 @@ python3 scripts/score.py --file examples/findability-weak.json
 python3 scripts/score.py --file examples/findability-calendar.json
 ```
 
-The good draft exits 0 and prints the six lines. The weak draft exits 1 and names each failing axis. The calendar draft exits 1. Then copy `examples/findability-template.json` and drop in yours. Add `--json` for output an agent can read.
+The good draft exits 0, prints the six lines, and names the next step. The weak draft exits 1 and prints one `- axis: what is wrong → what to change` line per problem. The calendar draft exits 1. Then copy `examples/findability-template.json` to `gtm/findability.json` and drop in yours. Add `--json` for one JSON object an agent can read (`pass`, `problems` with a `fix` each, `next`).
 
 ## What the score checks
 
@@ -116,7 +134,7 @@ No. llms.txt is not a fetchability control, and no major answer engine has commi
 [**Friday Signal**](https://jaymountconsulting.com/newsletter/signal) — one Friday GTM read. No pitch in it.
 ## Privacy and security
 
-`scripts/score.py` is standard-library Python and opens no network connection. It reads only the draft JSON you give it. The skills write one draft in your project folder and only read `brand-config.json`. `indexability` runs read-only `curl` against the URL you name, and `citation-record` runs your question in an answer engine or asks you to paste the answer; your agent asks before each request. No telemetry, no credentials, nothing published. See [SECURITY.md](SECURITY.md).
+`scripts/score.py` is standard-library Python and opens no network connection. It reads only the draft JSON you give it. The skill writes one draft, `gtm/findability.json`, in your project folder and only reads `brand-config.json`. The `indexability` mode runs read-only `curl` against the URL you name, and the `citation-record` mode runs your question in an answer engine or asks you to paste the answer; your agent asks before each request. No telemetry, no credentials, nothing published. See [SECURITY.md](SECURITY.md).
 
 ## Next
 

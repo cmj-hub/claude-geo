@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.0 — 2026-10-04
+
+- One skill per pack: `geo` is the only skill. The five step skills are modes it reads on demand. Always-on cost drops from ~708 to ~181 tokens.
+- `/geo:geo` takes a mode as its argument (`argument-hint` lists them). No argument runs `status`: what passes, what fails, the next step.
+- The draft lives at `gtm/findability.json` (the suite's shared work folder), not `draft.json`.
+- Scorer: every failing line reads `- field: what is wrong → what to change`; the last line names the next step (`Next: /landing-page:page` on a pass). `--json` adds `fix` per problem, `fix` on a refusal, and `next`. `--input` is a hidden alias for `--file`. `--help` shows an example.
+- README "In 60 seconds" block. Trigger evals under `evals/` and a manual `evals.yml` workflow.
+- `plugin.json` drops the `skills` key; default discovery finds `skills/geo/`.
+
+### Moved
+
+- `SKILL.md` → `skills/geo/SKILL.md`.
+- `skills/<step>/SKILL.md` → `skills/geo/modes/<step>.md` for `channel-decision`, `buyer-question`, `citation-record`, `indexability`, `brief`.
+- `/geo:brief` → `/geo:geo brief`; likewise `/geo:channel-decision`, `/geo:buyer-question`, `/geo:citation-record`, `/geo:indexability`.
+- `draft.json` → `gtm/findability.json`.
+
 ## 0.5.1 — 2026-10-04
 
 - `SECURITY.md`: what runs locally, which skills reach public pages and how, how to report a vulnerability.

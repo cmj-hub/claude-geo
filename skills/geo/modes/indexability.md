@@ -1,14 +1,19 @@
----
-name: indexability
-description: "Record an indexability pass for one URL: HTTP status, robots.txt for search and AI crawlers, meta robots, canonical, sitemap, and whether the answer is in the raw HTML without JavaScript. Use when a page must be fetchable by Google, Bing, GPTBot, OAI-SearchBot, ClaudeBot, PerplexityBot and the rest before anyone asks whether it can be cited."
-models: ""
----
-
 # Indexability
+
+Mode `indexability`: whether one URL can be fetched and listed by search and AI crawlers. Writes `indexability_pass`.
 
 An indexability pass says whether one URL can be fetched and listed. It is not a site grade.
 
 Answer engines can only quote what their crawler fetched or what a search index holds. Fetchability comes before content.
+
+## Contents
+
+- Checklist
+- The six checks
+- Crawlers to check in robots.txt
+- Not part of this pass
+- Output
+- Score
 
 ## Checklist
 
@@ -104,10 +109,10 @@ Name any crawler that is blocked. A blocked page fails the scorer.
 
 ## Score
 
-Write the field into `draft.json` (start from `examples/findability-template.json`), then run:
+Write the field into `gtm/findability.json` (create `gtm/` if missing; start from `${CLAUDE_PLUGIN_ROOT}/examples/findability-template.json`), then run:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-.}/scripts/score.py" --file draft.json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py --file gtm/findability.json
 ```
 
-Exit 0 prints the six lines. Exit 1 names each failing field; fix that field first. Fields other skills own may read `missing` until those skills run.
+Exit 0 prints the six lines. Exit 1 prints `- field: what is wrong → what to change` per problem; fix that field first. Fields other skills own may read `missing` until those skills run.

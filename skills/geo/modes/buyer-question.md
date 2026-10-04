@@ -1,10 +1,6 @@
----
-name: buyer-question
-description: "Choose one buyer question in the buyer's own words for the next page to answer. Use when the next page has to answer a question a buyer would type or paste into ChatGPT, Perplexity, Claude, Gemini, or Google AI Overviews, and when someone hands over a keyword list instead of a question."
-models: ""
----
-
 # Buyer question
+
+Mode `buyer-question`: one buyer question, in the buyer's own words, for the next page to answer. Writes `buyer_question`.
 
 One question. One brief. One kill date. A calendar of topics is a different job.
 
@@ -18,7 +14,7 @@ Copy this list and tick it in order.
 - [ ] 2. Cut any candidate that fails a filter (below).
 - [ ] 3. Pick one. Prefer the one closest to a buying decision.
 - [ ] 4. Write it into `buyer_question`, ending in `?`.
-- [ ] 5. Hand off to `citation-record` with that exact wording.
+- [ ] 5. Hand off to `/geo:geo citation-record` with that exact wording.
 - [ ] 6. Run the scorer. Review again until it exits 0.
 
 Go back to step 1 if the question is a keyword list.
@@ -61,10 +57,10 @@ The `buyer_question` field. Example:
 
 ## Score
 
-Write the field into `draft.json` (start from `examples/findability-template.json`), then run:
+Write the field into `gtm/findability.json` (create `gtm/` if missing; start from `${CLAUDE_PLUGIN_ROOT}/examples/findability-template.json`), then run:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-.}/scripts/score.py" --file draft.json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py --file gtm/findability.json
 ```
 
-Exit 0 prints the six lines. Exit 1 names each failing field; fix that field first. Fields other skills own may read `missing` until those skills run.
+Exit 0 prints the six lines. Exit 1 prints `- field: what is wrong → what to change` per problem; fix that field first. Fields other skills own may read `missing` until those skills run.
