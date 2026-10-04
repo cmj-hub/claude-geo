@@ -3,7 +3,10 @@
 
 Prints a channel decision, a buyer question, a citation record, an indexability
 pass, one brief, and one kill date. Refuses a health-score dump, an llms.txt
-project, or a 40-article calendar.
+project, or a 40-article calendar. A non-empty string still fails when the
+channel is not one channel, the question is not one question, the record has
+no date and method, the pass skips status or robots or sitemap, the brief is
+not one page, or the kill date is not YYYY-MM-DD.
 
 Stdlib only. No network.
 
@@ -99,6 +102,43 @@ def refusal_for(blob: str) -> str:
     return ""
 
 
+
+def is_iso_date(value: str) -> bool:
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        return False
+    year, month, day = (int(part) for part in value.split("-"))
+    if month < 1 or month > 12 or day < 1 or day > 31:
+        return False
+    if month in (4, 6, 9, 11) and day > 30:
+        return False
+    if month == 2:
+        leap = year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+        if day > (29 if leap else 28):
+            return False
+    return True
+
+
+def substance_failure(values: dict) -> str:
+    channel = values["channel_decision"]
+    if not (re.search(r"\bchannel\b", channel, re.IGNORECASE) and re.search(r"\bone\b", channel, re.IGNORECASE)):
+        return "channel decision is not one channel"
+    question = values["buyer_question"]
+    if question.count("?") != 1 or not question.endswith("?"):
+        return "buyer question is not one question"
+    record = values["citation_record"]
+    if not (re.search(r"\d{4}-\d{2}-\d{2}", record) and re.search(r"\bmethod\b", record, re.IGNORECASE)):
+        return "citation record is not a record"
+    passed = values["indexability_pass"]
+    low = passed.lower()
+    if not ("robots" in low and "sitemap" in low and ("200" in passed or "status" in low)):
+        return "indexability pass is not one URL"
+    if not re.search(r"\bone page\b", values["brief"], re.IGNORECASE):
+        return "brief is not one page"
+    if not is_iso_date(values["kill_date"]):
+        return "kill date is not a date"
+    return ""
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Score a findability draft")
     parser.add_argument("--file", help="Path to a JSON object")
@@ -116,6 +156,10 @@ def main() -> int:
         return 1
     if any(not values[key] for key, _label in FIELDS):
         print("draft is incomplete")
+        return 1
+    substance = substance_failure(values)
+    if substance:
+        print(substance)
         return 1
     for key, label in FIELDS:
         print(f"{label}: {values[key]}")

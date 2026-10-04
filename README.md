@@ -37,7 +37,7 @@ python3 scripts/score.py --file examples/findability-good.json
 python3 scripts/score.py --file examples/findability-calendar.json
 ```
 
-The good draft exits 0 and prints the six lines. The calendar draft exits 1. Then drop in yours.
+The good draft exits 0 and prints the six lines: channel decision, buyer question, citation record, indexability pass, brief, and kill date. The calendar draft exits 1. Then drop in yours.
 
 ## What this pack will not do
 
