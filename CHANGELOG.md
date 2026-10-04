@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 — 2026-10-04
+
+- `plugin.json` lists `"skills": ["./"]` so the root `geo` skill loads next to the five under `skills/`.
+- Root skill routes to the step skills by command (`/geo:buyer-question` and the rest).
+- Root and `buyer-question` read `psp.vocabulary` from `brand-config.json` when present; never invent it.
+- "Works with the suite" section: step 9, hands off to landing-page.
+- Root skill calls the scorer and examples through `${CLAUDE_SKILL_DIR}`.
+- README adds the suite marketplace and `npx skills add` install lines.
+- Manifest: author URL, keywords. Version synced in `marketplace.json`.
+
 ## 0.4.0 — 2026-10-04
 
 - Scorer checks each axis instead of only checking that fields are filled: question shape, citation date and method, HTTP status / robots / sitemap / blocked pages, brief length, and a kill date 14 to 180 days after the citation record.

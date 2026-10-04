@@ -33,6 +33,14 @@ Or clone it and load the files from disk. The skills live under `skills/` and `S
 git clone https://github.com/cmj-hub/claude-geo.git
 ```
 
+From the suite marketplace: `/plugin marketplace add cmj-hub/gtm-operator-skills`, then `/plugin install geo@gtm-operator-skills`.
+
+Other agents (Codex, Cursor, and the rest) can install it with the skills CLI:
+
+```
+npx skills add cmj-hub/claude-geo --all -g --full-depth
+```
+
 The scorer is Python in this repo. It does not call a paid API.
 
 ## The skills

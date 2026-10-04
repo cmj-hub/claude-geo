@@ -31,6 +31,8 @@ Go back to step 1 if the question is a keyword list.
 - The "People also ask" box and the follow-up questions an answer engine suggests.
 - The buyer's own phrasing in a lost-deal note.
 
+If `brand-config.json` sits at the project root and has `psp.vocabulary`, those are the buyer's words from the Pain Signal Profile. Phrase the question in them. Read only; do not write to the file. If the block is missing, say so (`/plugin install psp@gtm-operator-skills` makes it) and use the sources above. Do not invent vocabulary.
+
 Keyword tools give volume, not wording. Use them to break ties, not to write the question.
 
 ## Filters
