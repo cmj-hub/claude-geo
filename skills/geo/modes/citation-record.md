@@ -1,10 +1,6 @@
----
-name: citation-record
-description: "Write one dated citation record for one buyer question: which brands, pages, and sources an answer engine actually named, on what date, by what method. Use when someone asks whether they show up in ChatGPT, Perplexity, Claude, Gemini, Copilot, or Google AI Overviews, or when a visibility claim has no date or method behind it."
-models: ""
----
-
 # Citation record
+
+Mode `citation-record`: who an answer engine named for one question, on one date, by one method. Writes `citation_record`.
 
 A citation record names who was attached to one answer, on one date, by one method. A guessed list is not a record.
 
@@ -14,7 +10,7 @@ It is the baseline. On the kill date, the same method is run again and the two r
 
 Copy this list and tick it in order.
 
-- [ ] 1. Lock the buyer question. Use the exact wording from `buyer-question`.
+- [ ] 1. Lock the buyer question. Use the exact wording from the `buyer-question` mode.
 - [ ] 2. Pick the engines. At least one the buyer actually uses. Write them down.
 - [ ] 3. Run the question with the protocol below.
 - [ ] 4. Write the observed names, the date, and the method.
@@ -57,10 +53,10 @@ The `citation_record` field. Example:
 
 ## Score
 
-Write the field into `draft.json` (start from `examples/findability-template.json`), then run:
+Write the field into `gtm/findability.json` (create `gtm/` if missing; start from `${CLAUDE_PLUGIN_ROOT}/examples/findability-template.json`), then run:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-.}/scripts/score.py" --file draft.json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py --file gtm/findability.json
 ```
 
-Exit 0 prints the six lines. Exit 1 names each failing field; fix that field first. Fields other skills own may read `missing` until those skills run.
+Exit 0 prints the six lines. Exit 1 prints `- field: what is wrong → what to change` per problem; fix that field first. Fields other skills own may read `missing` until those skills run.

@@ -8,7 +8,8 @@ before you contribute.
 - **Bug reports** — open an issue with a reproducible case. The
   scripts in `scripts/` are deterministic, so bugs there are usually
   one-line fixes.
-- **New sub-skills** that extend the existing framework. Discuss in
+- **New modes** that extend the existing framework (a file under
+  `skills/geo/modes/`, routed from `skills/geo/SKILL.md`). Discuss in
   an issue first if it's a substantial addition.
 - **Calibration improvements** to the scoring scripts — if you can
   show a case where the script scores wrong, that's gold.
@@ -56,9 +57,10 @@ claude --plugin-dir .
 
 - [ ] Skill names follow the spec (lowercase, hyphens, ≤64 chars,
       directory matches `name:` in frontmatter)
-- [ ] Sub-skill descriptions include trigger phrases inline
+- [ ] The pack ships one skill (`skills/geo/SKILL.md`); new steps are
+      modes, not new skills
 - [ ] If you touch a script, smoke-test it and paste output in the PR
-- [ ] If you add a new sub-skill, list it in the README skills table and the root `SKILL.md`
+- [ ] If you add a new mode, list it in the README modes table, the routing table and `argument-hint` in `skills/geo/SKILL.md`
 - [ ] CHANGELOG.md updated
 - [ ] `python3 -m unittest discover -s tests` passes
 - [ ] No new dependencies (any of: pip packages, npm packages, API

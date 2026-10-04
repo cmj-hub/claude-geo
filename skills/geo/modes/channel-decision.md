@@ -1,10 +1,6 @@
----
-name: channel-decision
-description: "Decide whether answer-engine search is a channel for this offer before any page is planned. Use when someone asks for GEO, AEO, AI search visibility, 'getting cited by ChatGPT', or 'showing up in AI Overviews', and nobody has said yet whether search earns a page."
-models: ""
----
-
 # Channel decision
+
+Mode `channel-decision`: whether answer-engine search is a channel for this offer, before any page is planned. Writes `channel_decision`.
 
 A channel decision says whether answer-engine search is worth one page for this offer, and which question comes first. It is one or two sentences. It is not a strategy deck.
 
@@ -15,7 +11,7 @@ Copy this list and tick it in order.
 - [ ] 1. Name the offer and the buyer in one line each.
 - [ ] 2. Answer the three tests below. Write yes or no and one reason each.
 - [ ] 3. Write the decision: "Search is a channel for this offer" or "Search is not a channel for this offer", then why, then what comes first.
-- [ ] 4. If yes, hand off to `buyer-question`. If no, stop. Do not plan pages.
+- [ ] 4. If yes, hand off to `/geo:geo buyer-question`. If no, stop. Do not plan pages.
 
 ## The three tests
 
@@ -38,10 +34,10 @@ The `channel_decision` field of the draft. Example:
 
 ## Score
 
-Write the field into `draft.json` (start from `examples/findability-template.json`), then run:
+Write the field into `gtm/findability.json` (create `gtm/` if missing; start from `${CLAUDE_PLUGIN_ROOT}/examples/findability-template.json`), then run:
 
 ```bash
-python3 "${CLAUDE_PLUGIN_ROOT:-.}/scripts/score.py" --file draft.json
+python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py --file gtm/findability.json
 ```
 
-Exit 0 prints the six lines. Exit 1 names each failing field; fix that field first. Fields other skills own may read `missing` until those skills run.
+Exit 0 prints the six lines. Exit 1 prints `- field: what is wrong → what to change` per problem; fix that field first. Fields other skills own may read `missing` until those skills run.
