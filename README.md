@@ -114,6 +114,9 @@ No. llms.txt is not a fetchability control, and no major answer engine has commi
 [**Growth Audit**](https://jaymountconsulting.com/growth-audit) — architecture gaps in the GTM you already run. Free written report.
 
 [**Friday Signal**](https://jaymountconsulting.com/newsletter/signal) — one Friday GTM read. No pitch in it.
+## Privacy and security
+
+`scripts/score.py` is standard-library Python and opens no network connection. It reads only the draft JSON you give it. The skills write one draft in your project folder and only read `brand-config.json`. `indexability` runs read-only `curl` against the URL you name, and `citation-record` runs your question in an answer engine or asks you to paste the answer; your agent asks before each request. No telemetry, no credentials, nothing published. See [SECURITY.md](SECURITY.md).
 
 ## Next
 

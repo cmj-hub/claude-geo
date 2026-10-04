@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.1 — 2026-10-04
+
+- `SECURITY.md`: what runs locally, which skills reach public pages and how, how to report a vulnerability.
+- README privacy and security section.
+
 ## 0.5.0 — 2026-10-04
 
 - `plugin.json` lists `"skills": ["./"]` so the root `geo` skill loads next to the five under `skills/`.
