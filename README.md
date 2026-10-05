@@ -23,6 +23,8 @@ python3 scripts/score.py --file examples/findability-calendar.json   # exit 1: -
 
 Part of the GTM operator suite — `/plugin install gtm@gtm-operator-skills` installs all ten.
 
+Add the [gtm-operator mod](https://github.com/cmj-hub/gtm-operator-claude-mod) to see the suite's next step above your prompt and keep `brand-config.json` from being overwritten: `/plugin install gtm-operator@gtm-operator-skills`.
+
 Answer engine optimization is the same check.
 
 On 2026-10-01, three clean runs of the buyer question in ChatGPT named a rival and a roundup. This brand was named or cited in 0 of 3. Each run is recorded with its query, cited URLs, and a saved answer.
