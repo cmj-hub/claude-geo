@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.7.0 — 2026-10-05
+
+The scorer now checks evidence, not wording. A pass still means the record is complete and consistent, not that the page is indexed or cited; the README and skill say so.
+
+- **Citation record is structured.** `citation_record` is an object: `brand`, `brand_domain`, and one entry per run in `observations[]` (`engine`, `method`, `query`, `observed_at`, `run`, `clean_session`, `brands_named`, `cited_urls`, `brand_status`, `evidence`). The scorer fails a query that is not the buyer question word for word or names the brand, fewer than three distinct runs per engine and method (one for `tool export`), a missing evidence file, an unclean session, a `brand_status` that contradicts the brands named or the URLs cited, and runs spread over more than a week. App and API runs are kept apart.
+- **Indexability pass is structured.** `url`, `checked_at`, `status`, `redirects`, `robots` per crawler, `noindex`, `in_sitemap`, `raw_html_has_answer`. Status must be exactly 200 (a 204 used to pass); at most one redirect; Googlebot and Bingbot required; any search or AI-search crawler blocked fails; training crawlers may be blocked.
+- **Brief is structured.** `page`, `summary`, `unique_claim`, `follow_up_questions`. A claim with no number, quoted name, or capitalized name fails.
+- **Refusals read negation.** "No content calendar" and "one page, not a 40-article calendar" are no longer refused. Clauses are split so "llms.txt" stays one term.
+- **Parallel experiments.** One file per buyer question: `gtm/findability.json`, then `gtm/findability/<slug>.json`. A different question no longer waits for another's kill date. Batches of ten or more posts are still refused.
+- **New `review` mode** and optional `review` field. On the kill date: rerun every baseline engine and method, record `indexed`, `impressions`, `qualified_visits`, `conversions`, decide `expand`, `revise`, or `stop`. The scorer refuses a decision made on citations alone, and `stop` on a page that is not indexed or that earns visits or conversions. `Next:` follows the decision.
+- A blank template counts as missing on every axis.
+- Examples rewritten in the new shape; `examples/findability-reviewed.json` and sample evidence under `examples/evidence/` added.
+
+### Breaking
+
+- Free-text `citation_record`, `indexability_pass`, and `brief` now fail with "free text is not a record". Re-run those modes, or copy the shape from `examples/findability-good.json`.
+
 ## 0.6.0 — 2026-10-04
 
 - One skill per pack: `geo` is the only skill. The five step skills are modes it reads on demand. Always-on cost drops from ~708 to ~181 tokens.
