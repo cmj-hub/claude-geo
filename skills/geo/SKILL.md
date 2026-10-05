@@ -1,7 +1,7 @@
 ---
 name: geo
 description: "Score generative engine optimization (GEO) and answer engine optimization (AEO) findability for one buyer question: channel decision, buyer question, citation record, indexability pass, one page brief, and one kill date. Use when a page must be quotable by ChatGPT, Perplexity, Claude, Gemini, Copilot, or Google AI Overviews, when someone asks whether they show up in AI answers, or when a content calendar or health-score dump must be refused. Not for drafting the landing page itself (use landing-page)."
-argument-hint: "[channel-decision | buyer-question | citation-record | indexability | brief | status]"
+argument-hint: "[channel-decision | buyer-question | citation-record | indexability | brief | review | status]"
 allowed-tools: Read Write Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py:*)
 models: ""
 ---
@@ -19,7 +19,15 @@ The build guide teaches a human. This pack teaches an agent.
 ## Before any mode
 
 1. If `brand-config.json` sits at the project root, read `psp.vocabulary` (below).
-2. Read `gtm/findability.json` if it exists. That is the draft. If it does not exist, create `gtm/` if missing and copy `${CLAUDE_PLUGIN_ROOT}/examples/findability-template.json` to `gtm/findability.json`.
+2. Read `gtm/findability.json` if it exists. That is the draft for the first experiment. If it does not exist, create `gtm/` if missing and copy `${CLAUDE_PLUGIN_ROOT}/examples/findability-template.json` to `gtm/findability.json`.
+
+## One experiment per buyer question
+
+An experiment is one buyer question, its citation record, one page, and one kill date. Keep each experiment focused: one question, one brief, one page.
+
+Independent experiments can run side by side. The first lives in `gtm/findability.json`; each further question gets its own file, `gtm/findability/<slug>.json`, and its own run of the modes. Two files never share a buyer question. Do not wait for one experiment's kill date before starting a different question.
+
+What stays refused is a batch: a content calendar, or ten or more posts planned at once. That is a list of pages with no question, no baseline, and no review.
 
 ## Modes
 
@@ -32,15 +40,20 @@ If `$ARGUMENTS` names a mode, go straight to it. If `$ARGUMENTS` is empty, run `
 | `citation-record`, "do we show up in ChatGPT" | [modes/citation-record.md](modes/citation-record.md) | `citation_record` |
 | `indexability`, "can crawlers fetch this URL" | [modes/indexability.md](modes/indexability.md) | `indexability_pass` |
 | `brief`, "how should the page be written" | [modes/brief.md](modes/brief.md) | `brief`, `kill_date` |
+| `review`, "it is the kill date", "keep or kill this page" | [modes/review.md](modes/review.md) | `review` |
 | `status`, or no argument | this file, Status | nothing |
 
-Run the modes in the table's order. Each mode owns its checklist. This skill owns the draft and the score gate.
+Run the modes in the table's order; `review` runs on the kill date, after the page ships. Each mode owns its checklist. This skill owns the draft and the score gate.
 
 Moved in 0.6: the five step skills are modes now. `/geo:brief` is `/geo:geo brief`; the same holds for every former step command.
 
 ## Status
 
-Run the scorer on `gtm/findability.json`. Say which fields pass, which line fails, and the next step: the mode named in the first failing line, or `/landing-page:page` when it exits 0. On the kill date, say `/geo:geo citation-record`.
+Run the scorer on `gtm/findability.json` and on each file in `gtm/findability/`. Per experiment, say which fields pass, which line fails, and the next step: the mode named in the first failing line, or the `Next:` line when it exits 0. If an experiment's kill date has passed and it has no `review`, say `/geo:geo review`.
+
+## What a pass means
+
+The scorer checks that the record is complete and consistent: three clean runs per engine with the exact question, saved evidence, a 200 with crawlers allowed, a brief with a specific claim. It does not check that the page is indexed, cited, or worth keeping. Say so when you report a pass. The review on the kill date measures that.
 
 ## From brand-config.json
 
@@ -55,11 +68,11 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py --file ${CLAUDE_PLUGIN_ROOT}/exam
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py --file ${CLAUDE_PLUGIN_ROOT}/examples/findability-weak.json
 ```
 
-Exit 0 prints the six lines and `Next: /landing-page:page`. Exit 1 prints one `- field: what is wrong → what to change` line per problem, or the refusal (calendar, health score, llms.txt), then `Next: fix the lines above and run this again.` Exit 2 means the file is unusable. `--json` prints one object with `pass`, `problems` (each with a `fix`), and `next`.
+Exit 0 prints the six lines (seven with a review) and the next step. Exit 1 prints one `- field: what is wrong → what to change` line per problem, or the refusal (calendar, health score, llms.txt), then `Next: fix the lines above and run this again.` Exit 2 means the file is unusable. `--json` prints one object with `pass`, `problems` (each with a `fix`), and `next`.
 
 ## The loop
 
-On the kill date, run `/geo:geo citation-record` again with the same question and method. Named or cited: keep the page and pick the next question. Not named: rewrite once or kill the page. One brief ships before the next is written.
+On the kill date, run `/geo:geo review`. It reruns the citation record with the same question, engines, and method, and adds indexation, impressions, qualified visits, and conversions. The decision is expand, revise, or stop, with the evidence that drove it. Citation absence alone does not stop a page that is indexed and earning visits or conversions.
 
 Python 3 standard library only. No network.
 
@@ -68,8 +81,8 @@ Python 3 standard library only. No network.
 This is step 9 of the GTM operator suite (`/plugin marketplace add cmj-hub/gtm-operator-skills`).
 
 - **Reads:** `psp.vocabulary` (the buyer's words) from `brand-config.json`, if present.
-- **Writes:** `gtm/findability.json` only. It never touches another pack's keys.
+- **Writes:** `gtm/findability.json`, plus `gtm/findability/<slug>.json` per further experiment and saved answers under `gtm/evidence/`. It never touches another pack's keys.
 - **Before this:** psp (`/psp:psp`), when there is no buyer vocabulary yet.
 - **After this:** landing-page (`/landing-page:page`), to draft the page the brief describes.
 
-When the scorer exits 0, end with: `Next: /landing-page:page`. If a companion pack is not installed, name it and its install line (`/plugin install <name>@gtm-operator-skills`); do not do its job inline.
+When the scorer exits 0, end with its `Next:` line (`/landing-page:page` before a review). If a companion pack is not installed, name it and its install line (`/plugin install <name>@gtm-operator-skills`); do not do its job inline.
