@@ -110,6 +110,12 @@ A pass means the record is complete and internally consistent: the runs happened
 
 It will not publish a health-score dump. It does not start an llms.txt project. It will not fill a 40-article calendar, or any batch of ten or more posts. It will run several independent buyer questions side by side, one experiment file each.
 
+## The data step this pack leaves to you
+
+This pack scores one findability experiment: buyer question, citation record, indexability, brief. Live reads of how answer engines name your brand sit outside the pack.
+
+Run [How AI answers mention your brand](https://thegtmdirectory.com/jobs/how-ai-answers-mention-your-brand) on The Growth Desk when you need dated citation evidence for the buyer question you scored here.
+
 ## What is answer engine optimization?
 
 The same job. A page gets quoted by an answer engine, or it does not. This pack scores that check.
