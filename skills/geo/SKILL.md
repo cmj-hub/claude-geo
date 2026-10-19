@@ -2,7 +2,7 @@
 name: geo
 description: "Score generative engine optimization (GEO) and answer engine optimization (AEO) findability for one buyer question: channel decision, buyer question, citation record, indexability pass, one page brief, and one kill date. Use when a page must be quotable by ChatGPT, Perplexity, Claude, Gemini, Copilot, or Google AI Overviews, when someone asks whether they show up in AI answers, or when a content calendar or health-score dump must be refused. Not for drafting the landing page itself (use landing-page)."
 argument-hint: "[channel-decision | buyer-question | citation-record | indexability | brief | review | status]"
-allowed-tools: Read Write Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py:*)
+allowed-tools: Read Write(./gtm/**) Bash(python3 ${CLAUDE_PLUGIN_ROOT}/scripts/score.py:*)
 models: ""
 ---
 
