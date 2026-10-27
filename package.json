@@ -1,0 +1,40 @@
+{
+  "name": "@jmc-gtm/claude-geo",
+  "version": "0.7.0",
+  "description": "Score generative engine optimization (GEO) and answer engine optimization (AEO) findability for one buyer question. Use when a page must be quotable by ChatGPT, Perplexity, Claude, Gemini, Copilot, or Google AI Overviews. Refuses a content calendar or a health-score dump.",
+  "license": "MIT",
+  "author": "JMC Go-to-Market Systems",
+  "homepage": "https://github.com/cmj-hub/claude-geo#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmj-hub/claude-geo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cmj-hub/claude-geo/issues"
+  },
+  "keywords": [
+    "agent-skills",
+    "claude-code",
+    "claude-plugin",
+    "geo",
+    "aeo",
+    "generative-engine-optimization",
+    "answer-engine-optimization",
+    "ai-search",
+    "citations",
+    "seo"
+  ],
+  "files": [
+    ".claude-plugin",
+    "skills",
+    "scripts",
+    "examples",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}
