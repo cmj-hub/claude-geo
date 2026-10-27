@@ -60,6 +60,23 @@ npx skills add cmj-hub/claude-geo --all -g --full-depth
 
 The scorer is Python in this repo. It does not call a paid API.
 
+### From npm
+
+The same pack is on npm as [`@jmc-gtm/claude-geo`](https://www.npmjs.com/package/@jmc-gtm/claude-geo), released from this repo's version tags with npm provenance. It has no dependencies and no install scripts.
+
+In a project, for any agent host the skills installer knows (`experimental_sync` is still marked experimental there):
+
+```bash
+npm install -D @jmc-gtm/claude-geo
+npx skills experimental_sync -a claude-code -y
+```
+
+In your own Claude Code plugin marketplace, point an entry at the package:
+
+```json
+{ "name": "geo", "source": { "source": "npm", "package": "@jmc-gtm/claude-geo" } }
+```
+
 ## The modes
 
 One command, `/geo:geo`, with a mode as the argument. Run the modes in order. Each one writes one field of `gtm/findability.json`. That file is one experiment: one buyer question. Further questions run in parallel, one file each under `gtm/findability/`. With no argument, `/geo:geo` reports status and starts the first missing field.
